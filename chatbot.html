@@ -1,0 +1,335 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InnovateSphere - AI-Powered Solutions</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Puter.js Script -->
+    <script src="https://js.puter.com/v2/"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Custom Styles for a Polished Look */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Tailwind gray-50 */
+        }
+
+        /* Chat bubble styling */
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            word-wrap: break-word;
+        }
+
+        .user-bubble {
+            background-color: #3b82f6; /* Tailwind blue-500 */
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-bubble {
+            background-color: #e5e7eb; /* Tailwind gray-200 */
+            color: #1f2937; /* Tailwind gray-800 */
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        
+        /* Typing indicator animation */
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background-color: #9ca3af; /* Tailwind gray-400 */
+            display: inline-block;
+            border-radius: 50%;
+            animation: bounce 1.3s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+            }
+            40% {
+                transform: scale(1.0);
+            }
+        }
+
+        /* Streaming text animation */
+        .streaming-text {
+            border-right: 2px solid #3b82f6;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { border-color: transparent; }
+            51%, 100% { border-color: #3b82f6; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+        <!-- Header Section -->
+        <header class="p-6 border-b border-gray-200 text-center">
+            <h1 class="text-3xl font-bold text-gray-900">InnovateSphere</h1>
+            <p class="text-md text-gray-500 mt-1">Transforming Ideas into Intelligent Realities</p>
+        </header>
+
+        <!-- Chatbot Section -->
+        <main class="p-6">
+            <p class="text-center text-gray-600 mb-4 text-sm">
+                Ask our AI about our story, services, or how you can get involved.
+            </p>
+
+            <!-- Message Display Area -->
+            <div id="chat-messages" class="h-80 overflow-y-auto p-4 bg-gray-100 rounded-lg border border-gray-200 flex flex-col space-y-2 mb-4">
+                <!-- Chat messages will appear here -->
+                <div class="chat-bubble ai-bubble">
+                    Hello! I'm the InnovateSphere AI assistant. Feel free to ask me anything about our startup.
+                </div>
+            </div>
+            
+            
+            <!-- Sample Questions -->
+            <div class="mb-4">
+                <p class="text-sm font-medium text-gray-700 mb-2">Or try one of these:</p>
+                <div id="sample-questions" class="flex flex-wrap gap-2">
+                    <button class="sample-question bg-gray-200 text-gray-700 text-sm font-medium py-1.5 px-3 rounded-full hover:bg-gray-300 transition-colors">Who founded the startup?</button>
+                    <button class="sample-question bg-gray-200 text-gray-700 text-sm font-medium py-1.5 px-3 rounded-full hover:bg-gray-300 transition-colors">What problems does it solve?</button>
+                    <button class="sample-question bg-gray-200 text-gray-700 text-sm font-medium py-1.5 px-3 rounded-full hover:bg-gray-300 transition-colors">What services does it offer?</button>
+                    <button class="sample-question bg-gray-200 text-gray-700 text-sm font-medium py-1.5 px-3 rounded-full hover:bg-gray-300 transition-colors">How can I contact the team?</button>
+                    <button class="sample-question bg-gray-200 text-gray-700 text-sm font-medium py-1.5 px-3 rounded-full hover:bg-gray-300 transition-colors">What is the long-term goal?</button>
+                </div>
+            </div>
+
+            <!-- Text Input and Send Button -->
+            <div class="flex items-center space-x-2">
+                <input type="text" id="chat-input" placeholder="Type your question here..." class="flex-grow p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                <button id="send-btn" class="bg-blue-500 text-white font-semibold py-3 px-5 rounded-lg hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-300 disabled:cursor-not-allowed">
+                    Send
+                </button>
+            </div>
+            <p id="error-message" class="text-red-500 text-sm mt-2 h-4"></p>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if Puter.js loaded correctly
+            if (typeof window.puter === 'undefined') {
+                document.getElementById('error-message').textContent = 'Puter.js failed to load. Please refresh the page.';
+                return;
+            }
+
+            // --- DOM Element References ---
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            const errorMessage = document.getElementById('error-message');
+            const sampleQuestionsContainer = document.getElementById('sample-questions');
+
+            // --- Chatbot Context ---
+            const startupContext = `You are a friendly and knowledgeable AI assistant for a startup called 'InnovateSphere'.
+                Your goal is to answer questions about the startup based on the following information.
+                Maintain a positive and encouraging tone.
+
+                **Startup Story & Founder:**
+                InnovateSphere was founded in 2024 by Michael Moses, a passionate software engineer with a decade of experience in AI and machine learning. 
+                Alex noticed that many small businesses struggled to leverage AI due to high costs and complexity. 
+                InnovateSphere was born from the desire to democratize AI, making powerful tools accessible and affordable for everyone.
+
+                **Mission and Problem Solved:**
+                Our mission is to empower small and medium-sized businesses (SMBs) by providing them with simple, effective, and affordable AI-powered tools. 
+                We solve the problem of AI accessibility, breaking down the financial and technical barriers that prevent SMBs from competing with larger corporations in the digital landscape.
+
+                **Services and Products:**
+                We offer a suite of AI services:
+                1. **AI Chatbots:** Custom-trained chatbots like me to handle customer support and sales inquiries 24/7.
+                2. **Data Analytics Platform:** An intuitive dashboard that turns business data into actionable insights, helping owners make smarter decisions without needing a data scientist.
+                3. **Content Creation Tool:** An AI-powered assistant that helps generate marketing copy, blog posts, and social media updates, saving businesses time and resources.
+
+                **Contact and Support:**
+                Anyone can get involved or contact our team! The best way is to send an email to contact@innovatesphere.dev. We're always looking for feedback, potential partners, and talented individuals to join our mission. We welcome collaboration.
+
+                **Vision and Long-Term Goal:**
+                Our long-term vision is to become the go-to AI partner for SMBs globally. We aim to build a comprehensive ecosystem of AI tools that support every aspect of a small business, from marketing and sales to operations and customer service, leveling the playing field for entrepreneurs everywhere.`;
+
+            // Store conversation history for context
+            let chatHistory = [
+                { role: 'system', content: startupContext }
+            ];
+
+            // --- Functions ---
+
+            /**
+             * Appends a message to the chat display.
+             * @param {string} message - The text of the message.
+             * @param {('user' | 'ai')} sender - Who sent the message.
+             */
+            const addMessageToUI = (message, sender) => {
+                const bubble = document.createElement('div');
+                bubble.className = `chat-bubble ${sender === 'user' ? 'user-bubble' : 'ai-bubble'}`;
+                bubble.textContent = message;
+                chatMessages.appendChild(bubble);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            };
+
+            /**
+             * Adds a streaming message bubble that can be updated in real-time
+             */
+            const addStreamingMessage = () => {
+                const bubble = document.createElement('div');
+                bubble.className = 'chat-bubble ai-bubble streaming-text';
+                bubble.id = 'streaming-bubble';
+                chatMessages.appendChild(bubble);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                return bubble;
+            };
+
+            /**
+             * Shows or hides the typing indicator.
+             * @param {boolean} show - Whether to show the indicator.
+             */
+            const showTypingIndicator = (show) => {
+                let indicator = document.getElementById('typing-indicator');
+                if (show) {
+                    if (!indicator) {
+                        indicator = document.createElement('div');
+                        indicator.id = 'typing-indicator';
+                        indicator.className = 'chat-bubble ai-bubble typing-indicator';
+                        indicator.innerHTML = `<span></span><span></span><span></span>`;
+                        chatMessages.appendChild(indicator);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                } else {
+                    if (indicator) {
+                        indicator.remove();
+                    }
+                }
+            };
+
+            /**
+             * Handles sending the chat message to the AI and displaying the response.
+             */
+            const handleSendMessage = async () => {
+                const userMessage = chatInput.value.trim();
+
+                // Handle empty input
+                if (!userMessage) {
+                    errorMessage.textContent = 'Please enter a question.';
+                    setTimeout(() => errorMessage.textContent = '', 3000);
+                    return;
+                }
+
+                // Disable input and button during API call
+                chatInput.disabled = true;
+                sendBtn.disabled = true;
+                errorMessage.textContent = '';
+
+                // Add user message to UI and history
+                addMessageToUI(userMessage, 'user');
+                chatHistory.push({ role: 'user', content: userMessage });
+                chatInput.value = '';
+
+                // Show typing indicator
+                showTypingIndicator(true);
+
+                try {
+                    // Use the correct Puter.js API call with conversation history
+                    const response = await puter.ai.chat(chatHistory, {
+                        model: 'gpt-4o' // Using GPT-4o which is the default and reliable
+                    });
+
+                    console.log('Puter.js response:', response);
+
+                    // Handle the response based on the actual Puter.js API structure
+                    let aiMessage = '';
+                    
+                    if (typeof response === 'string') {
+                        // Simple string response
+                        aiMessage = response;
+                    } else if (response && response.message && response.message.content) {
+                        // New API structure with message object
+                        if (Array.isArray(response.message.content)) {
+                            aiMessage = response.message.content[0].text || response.message.content[0];
+                        } else {
+                            aiMessage = response.message.content;
+                        }
+                    } else if (response && response.content) {
+                        // Alternative response structure
+                        aiMessage = response.content;
+                    } else {
+                        throw new Error('Unexpected response structure: ' + JSON.stringify(response));
+                    }
+
+                    // Add AI response to history and UI
+                    chatHistory.push({ role: 'assistant', content: aiMessage });
+                    addMessageToUI(aiMessage, 'ai');
+
+                } catch (error) {
+                    console.error('Puter.js Error:', error);
+                    let errorMsg = 'Sorry, I encountered an error. Please try again.';
+                    
+                    if (error.message) {
+                        errorMsg = `Error: ${error.message}`;
+                    }
+                    
+                    addMessageToUI(errorMsg, 'ai');
+                    errorMessage.textContent = 'Failed to get response. Please try again.';
+                } finally {
+                    // Clean up
+                    showTypingIndicator(false);
+                    chatInput.disabled = false;
+                    sendBtn.disabled = false;
+                    chatInput.focus();
+                }
+            };
+
+            // --- Event Listeners ---
+
+            // Send button click
+            sendBtn.addEventListener('click', handleSendMessage);
+
+            // Enter key press in input
+            chatInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    handleSendMessage();
+                }
+            });
+            
+            // Sample questions click
+            sampleQuestionsContainer.addEventListener('click', (event) => {
+                if (event.target.classList.contains('sample-question')) {
+                    const question = event.target.textContent;
+                    chatInput.value = question;
+                    handleSendMessage();
+                }
+            });
+
+            // Focus the input on page load
+            chatInput.focus();
+        });
+    </script>
+</body>
+</html>
