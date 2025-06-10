@@ -69,23 +69,20 @@
         </div>
     </section>
 
-    <div class="audience-toggle-container">
-  <div class="toggle-switch">
-    <button id="studentBtn" class="active">For Students</button>
-    <button id="mentorBtn">For Mentors</button>
-  </div>
+   <section class="audience-section">
+    <div class="toggle-switch-container">
+        <button id="toggleStudents" class="toggle-button">Students</button>
+        <button id="toggleMentors" class="toggle-button">Mentors</button>
+        <div class="toggle-indicator"></div> </div>
 
-  <div id="studentContent" class="audience-content">
-    <h2>Student Content</h2>
-    <p>Welcome, students! Here’s content just for you.</p>
-  </div>
+    <div id="studentsContent" class="audience-content">
+        <p>This is content for students.</p>
+        </div>
 
-  <div id="mentorContent" class="audience-content hidden">
-    <h2>Mentor Content</h2>
-    <p>Welcome, mentors! Here’s your special content.</p>
-  </div>
-</div>
-
+    <div id="mentorsContent" class="audience-content" hidden>
+        <p>This is content for mentors.</p>
+        </div>
+</section>
 
     <section class="features-and-impacts-section">
         <p class="section-heading">KEY FEATURES & IMPACTS</p>
@@ -190,30 +187,23 @@
 
 <script src="https://js.puter.com/v2/"></script>
 <section class="chatbot-section">
-        <p class="section-heading">CHAT WITH US</p>
-        <div class="chatbot-container">
-            <div class="chat-display">
-                <div class="chat-bubble bot-message">
-                    <p>Hi there! How can I help you today?</p>
-                </div>
-                <div class="chat-bubble user-message">
-                    <p>who founded hercircle</p>
-                </div>
-                <div class="chat-bubble bot-message">
-                   <p>hercircle was founded by june kwamboka with the aim of supporting women </p>
-                </div>
-                <div class="chat-bubble user-message">
-                    <p>How will hercircle benefit me?</p>
-                </div>
+    <p class="section-heading">CHAT WITH US</p>
+    <p class="chatbot-instructions">Ask our AI about our story, services, or how you can get involved.</p>
+    <div class="chatbot-container">
+        <div class="chat-display">
+            <div class="chat-bubble bot-message">
+                <p>Hi there! How can I help you today?</p>
             </div>
-            <div class="chat-input-area">
-                <input type="text" placeholder="Type your message..." class="chat-input-field">
-                <button class="chat-send-button">Send</button>
+            <div class="chat-bubble bot-message typing-indicator" style="display: none;">
+                <p>Typing...</p>
             </div>
         </div>
-    </section>
-
-
+        <div class="chat-input-area">
+            <input type="text" placeholder="Type your message..." class="chat-input-field">
+            <button class="chat-send-button">Send</button>
+        </div>
+    </div>
+</section>
 
 
     <section class="contact-us-section">
@@ -234,31 +224,26 @@
             </div>
         </form>
     </section>
- <section class="faq">
-     <h2>Frequently Asked Questions</h2>
-
-  <div class="faq-item">
-    <button class="faq-question">What is InnovateSphere?</button>
-    <div class="faq-answer">
-      <p>InnovateSphere is a startup providing AI solutions for small businesses.</p>
-    </div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-question">How do I get involved?</button>
-    <div class="faq-answer">
-      <p>You can contact us at contact@innovatesphere.dev or apply to join our team!</p>
-    </div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-question">What services do you offer?</button>
-    <div class="faq-answer">
-      <p>We offer AI chatbots, analytics, and content creation tools.</p>
-    </div>
-  </div>
+ 
+ <section class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-container">
+        <div class="faq-item">
+            <div class="faq-question"> <h3>What is HerCircle? <span class="arrow"></span></h3>
+            </div>
+            <div class="faq-answer">
+                <p>HerCircle is a safe and inclusive online community for women to connect, learn, and grow together through empowerment workshops, mentorships, and a resource hub.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question"> <h3>Who can join HerCircle? <span class="arrow"></span></h3>
+            </div>
+            <div class="faq-answer">
+                <p>HerCircle is for all women who are looking for a supportive sisterhood and resources to help them lead with confidence and compassion.</p>
+            </div>
+        </div>
+        </div>
 </section>
-
     <div class="text-line-1">
         <p><strong>“💜 Thank you for visiting HerCircle. Stay connected and empowered!</strong></p>
         <p class="text-line-2">1,237 visitors so far — and growing!</p>
